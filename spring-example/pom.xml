@@ -11,5 +11,8 @@
 
     <artifactId>spring-example</artifactId>
     <packaging>pom</packaging>
+    <modules>
+        <module>context-example</module>
+    </modules>
 
 </project>
