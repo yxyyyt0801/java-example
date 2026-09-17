@@ -34,10 +34,12 @@ public class Printer {
                 m -> m));
     }
 
+    @PrinterTitleAnnotation(value = ">>>>>>>>>>>>>>>>>>", isNeed = true)
     public void print() {
         cache.forEach((messageTypeEnum, messageService) -> System.out.println(messageService.getMessage()));
     }
 
+    @PrinterTitleAnnotation(value = ">>>>>>>>>>>>>>>>>>")
     public void print(MessageTypeEnum type) {
         cache.entrySet().stream()
                 .filter(entry -> entry.getKey().equals(type))

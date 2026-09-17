@@ -18,6 +18,7 @@ import java.util.List;
  * All Rights Reserved(C) 2017 - 2026 SCIATTA <br> <p/>
  * PrinterTests
  */
+// @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = Starter.class)
 public class PrinterTests {
     @Autowired
@@ -55,7 +56,7 @@ public class PrinterTests {
         when(frMessageService.getType()).thenReturn(MessageTypeEnum.FR);
         when(frMessageService.getMessage()).thenReturn("Bonjour!");
 
-        Printer printer = new Printer(List.of(frMessageService));
+        Printer printer = new Printer(List.of(frMessageService));   // 不受控 spring 容器
         printer.print(MessageTypeEnum.FR);
     }
 
