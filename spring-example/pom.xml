@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>context-example</module>
+        <module>jdbc-example</module>
     </modules>
 
 </project>
