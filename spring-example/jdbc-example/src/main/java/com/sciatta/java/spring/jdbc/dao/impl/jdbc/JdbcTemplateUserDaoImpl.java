@@ -1,4 +1,4 @@
-package com.sciatta.java.spring.jdbc.dao.impl;
+package com.sciatta.java.spring.jdbc.dao.impl.jdbc;
 
 import com.sciatta.java.spring.jdbc.dao.UserDao;
 import com.sciatta.java.spring.jdbc.dao.annotation.JdbcTemplateUserDao;
