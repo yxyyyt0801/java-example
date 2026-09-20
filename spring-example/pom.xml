@@ -15,6 +15,7 @@
         <module>context-example</module>
         <module>jdbc-example</module>
         <module>mvc-example</module>
+        <module>tomcat-embed-example</module>
     </modules>
 
 </project>
