@@ -10,7 +10,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -38,7 +37,6 @@ public class JdbcTemplateUserDaoImpl implements UserDao {
     };
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public User create(User user) {
         String sql = "INSERT INTO users(name, email) VALUES(?, ?)";
 
@@ -57,7 +55,6 @@ public class JdbcTemplateUserDaoImpl implements UserDao {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void batchCreate(List<User> users) {
         for (User user : users) {
             create(user);
@@ -65,35 +62,30 @@ public class JdbcTemplateUserDaoImpl implements UserDao {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public int delete(Long id) {
         String sql = "DELETE FROM users WHERE id = ?";
         return this.jdbcTemplate.update(sql, id);
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public int update(User user) {
         String sql = "UPDATE users SET name = ?, email = ? WHERE id = ?";
         return this.jdbcTemplate.update(sql, user.getName(), user.getEmail(), user.getId());
     }
 
     @Override
-    @Transactional(readOnly = true)
     public User findById(Long id) {
         String sql = "SELECT * FROM users WHERE id = ?";
         return this.jdbcTemplate.queryForObject(sql, userRowMapper, id);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<User> findAll() {
         String sql = "SELECT * FROM users";
         return this.jdbcTemplate.query(sql, userRowMapper);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public PageResult<User> page(int pageNum, int pageSize) {
         String sql = "SELECT count(*) FROM users";
         Long total = jdbcTemplate.queryForObject(sql, Long.class);

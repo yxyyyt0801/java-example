@@ -3,6 +3,7 @@ package com.sciatta.java.spring.jdbc.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,8 +21,12 @@ import java.util.UUID;
 @AllArgsConstructor
 @Data
 @TableName("users")
+@Entity
+@Table(name = "users")
 public class User {
     @TableId(type = IdType.AUTO)    // id 自增
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String email;

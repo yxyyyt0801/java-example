@@ -6,20 +6,24 @@ import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerIntercept
 import com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import jakarta.persistence.EntityManagerFactory;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
-import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
+import java.util.Properties;
 
 /**
  * Created by yangxiaoyu on 2026/9/18<br>
@@ -30,8 +34,11 @@ import javax.sql.DataSource;
 @ComponentScan(basePackages = "com.sciatta.java.spring.jdbc")   // 扫描包下组件
 @EnableTransactionManagement    // 开启事务管理
 @MapperScan("com.sciatta.java.spring.jdbc.dao.impl.mybatis")    // 扫描 MyBatis Mapper 接口
-//@EnableJpaRepositories("com.sciatta.java.spring.jdbc.dao.impl.jpa") // 扫码 JPA 接口
+@EnableJpaRepositories("com.sciatta.java.spring.jdbc.dao.impl.jpa") // 扫码 JPA 接口
 public class AppConfig {
+    /**
+     * 数据源
+     */
     @Bean
     public DataSource dataSource() {
         HikariConfig config = new HikariConfig();
@@ -62,7 +69,7 @@ public class AppConfig {
     }
 
     /**
-     * 配置 MyBatis-Plus 的 SqlSessionFactory
+     * MyBatis-Plus 的 SqlSessionFactory
      */
     @Bean
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource, MybatisPlusInterceptor mybatisPlusInterceptor) throws Exception {
@@ -73,7 +80,7 @@ public class AppConfig {
     }
 
     /**
-     * 配置 MyBatis-Plus 的分页拦截器
+     * MyBatis-Plus 的分页拦截器
      */
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
@@ -82,8 +89,31 @@ public class AppConfig {
         return interceptor;
     }
 
+    /**
+     * Jpa 的 EntityManagerFactory
+     */
     @Bean
-    public PlatformTransactionManager transactionManager(DataSource dataSource) {
-        return new DataSourceTransactionManager(dataSource);
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
+        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+        em.setDataSource(dataSource);
+        em.setPackagesToScan("com.sciatta.java.spring.jdbc.entity");
+        em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+
+        Properties props = new Properties();
+        props.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        props.put("hibernate.hbm2ddl.auto", "none");  // schema.sql 已经建表了
+        props.put("hibernate.show_sql", "true");
+        props.put("hibernate.format_sql", "true");
+        em.setJpaProperties(props);
+
+        return em;
+    }
+
+    /**
+     * JdbcTemplate、MyBatis-Plus、Jpa 共用事务管理器，事务是连接级别的，管的是底层的 JDBC 连接
+     */
+    @Bean
+    public JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+        return new JpaTransactionManager(entityManagerFactory);
     }
 }

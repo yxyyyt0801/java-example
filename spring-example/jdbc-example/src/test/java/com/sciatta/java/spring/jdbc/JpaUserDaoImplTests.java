@@ -2,7 +2,7 @@ package com.sciatta.java.spring.jdbc;
 
 import com.sciatta.java.spring.jdbc.config.AppConfig;
 import com.sciatta.java.spring.jdbc.dao.UserDao;
-import com.sciatta.java.spring.jdbc.dao.annotation.JdbcTemplateUserDao;
+import com.sciatta.java.spring.jdbc.dao.annotation.JpaUserDao;
 import com.sciatta.java.spring.jdbc.entity.PageResult;
 import com.sciatta.java.spring.jdbc.entity.User;
 import org.junit.jupiter.api.Test;
@@ -16,15 +16,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
- * Created by yangxiaoyu on 2026/9/19<br>
+ * Created by yangxiaoyu on 2026/9/22<br>
  * All Rights Reserved(C) 2017 - 2026 SCIATTA <br> <p/>
- * JdbcTemplateUserDaoImplTests
+ * JpaUserDaoImplTests
  */
 @SpringBootTest(classes = AppConfig.class)
-@Transactional  // 每一个测试方法开启一个独立的事务，并在测试方法执行结束后强制回滚，无论操作成功还是失败。
-public class JdbcTemplateUserDaoImplTests {
-    @JdbcTemplateUserDao
+@Transactional
+public class JpaUserDaoImplTests {
     @Autowired
+    @JpaUserDao
     private UserDao userDao;
 
     @Test
@@ -95,5 +95,4 @@ public class JdbcTemplateUserDaoImplTests {
         System.out.println(page);
         assertEquals(2, page.getList().size());
     }
-
 }
