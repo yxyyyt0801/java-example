@@ -2,6 +2,7 @@ package com.sciatta.java.spring.jdbc.dao.impl.jdbc;
 
 import com.sciatta.java.spring.jdbc.dao.UserDao;
 import com.sciatta.java.spring.jdbc.dao.annotation.JdbcTemplateUserDao;
+import com.sciatta.java.spring.jdbc.entity.PageResult;
 import com.sciatta.java.spring.jdbc.entity.User;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -57,6 +58,14 @@ public class JdbcTemplateUserDaoImpl implements UserDao {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    public void batchCreate(List<User> users) {
+        for (User user : users) {
+            create(user);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public int delete(Long id) {
         String sql = "DELETE FROM users WHERE id = ?";
         return this.jdbcTemplate.update(sql, id);
@@ -81,5 +90,18 @@ public class JdbcTemplateUserDaoImpl implements UserDao {
     public List<User> findAll() {
         String sql = "SELECT * FROM users";
         return this.jdbcTemplate.query(sql, userRowMapper);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResult<User> page(int pageNum, int pageSize) {
+        String sql = "SELECT count(*) FROM users";
+        Long total = jdbcTemplate.queryForObject(sql, Long.class);
+
+        int offset = (pageNum - 1) * pageSize;
+        sql = "SELECT * FROM users ORDER BY id LIMIT ? OFFSET ?";
+        List<User> list = jdbcTemplate.query(sql, userRowMapper, pageSize, offset);
+
+        return new PageResult<>(list, total == null ? 0 : total, pageNum, pageSize);
     }
 }

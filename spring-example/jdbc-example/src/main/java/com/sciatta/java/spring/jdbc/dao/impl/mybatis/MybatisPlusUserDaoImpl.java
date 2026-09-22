@@ -1,7 +1,10 @@
 package com.sciatta.java.spring.jdbc.dao.impl.mybatis;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sciatta.java.spring.jdbc.dao.UserDao;
 import com.sciatta.java.spring.jdbc.dao.annotation.MybatisPlusUserDao;
+import com.sciatta.java.spring.jdbc.entity.PageResult;
 import com.sciatta.java.spring.jdbc.entity.User;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -30,8 +33,14 @@ public class MybatisPlusUserDaoImpl implements UserDao {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    public void batchCreate(List<User> users) {
+        users.forEach(this::create);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public int delete(Long id) {
-       return userMapper.deleteById(id);
+        return userMapper.deleteById(id);
     }
 
     @Override
@@ -50,5 +59,15 @@ public class MybatisPlusUserDaoImpl implements UserDao {
     @Transactional(readOnly = true)
     public List<User> findAll() {
         return userMapper.selectList(null);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResult<User> page(int pageNum, int pageSize) {
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        wrapper.orderByAsc(User::getId);
+
+        Page<User> userPage = userMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
+        return new PageResult<>(userPage.getRecords(), userPage.getTotal(), userPage.getCurrent(), userPage.getSize());
     }
 }

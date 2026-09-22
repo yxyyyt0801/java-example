@@ -1,5 +1,6 @@
 package com.sciatta.java.spring.jdbc.dao;
 
+import com.sciatta.java.spring.jdbc.entity.PageResult;
 import com.sciatta.java.spring.jdbc.entity.User;
 
 import java.util.List;
@@ -12,6 +13,8 @@ import java.util.List;
 public interface UserDao {
     User create(User user);
 
+    void batchCreate(List<User> users);
+
     int delete(Long id);
 
     int update(User user);
@@ -19,4 +22,6 @@ public interface UserDao {
     User findById(Long id);
 
     List<User> findAll();
+
+    PageResult<User> page(int pageNum, int pageSize);
 }

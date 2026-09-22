@@ -3,7 +3,10 @@ package com.sciatta.java.spring.jdbc;
 import com.sciatta.java.spring.jdbc.config.AppConfig;
 import com.sciatta.java.spring.jdbc.dao.UserDao;
 import com.sciatta.java.spring.jdbc.dao.annotation.MybatisPlusUserDao;
+import com.sciatta.java.spring.jdbc.entity.PageResult;
 import com.sciatta.java.spring.jdbc.entity.User;
+import jakarta.annotation.PostConstruct;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Created by yangxiaoyu on 2026/9/19<br>
@@ -27,8 +31,11 @@ public class MybatisPlusUserDaoImplTests {
 
     @Test
     public void testCreate() {
-        User user = userDao.create(createUser());
-        assertEquals(3, user.getId());
+        User user = userDao.create(User.createUser());
+        assertNotNull(user);
+
+        List<User> all = userDao.findAll();
+        assertEquals(3, all.size());
     }
 
     @Test
@@ -73,4 +80,28 @@ public class MybatisPlusUserDaoImplTests {
         return user;
     }
 
+    @Test
+    public void testBatchCreate() {
+        userDao.batchCreate(User.createUsers(20));
+
+        List<User> all = userDao.findAll();
+        assertEquals(22, all.size());
+    }
+
+    @Test
+    public void testPage() {
+        userDao.batchCreate(User.createUsers(20));
+
+        PageResult<User> page = userDao.page(1, 10);
+        System.out.println(page);
+        assertEquals(10, page.getList().size());
+
+        page = userDao.page(2, 10);
+        System.out.println(page);
+        assertEquals(10, page.getList().size());
+
+        page = userDao.page(3, 10);
+        System.out.println(page);
+        assertEquals(2, page.getList().size());
+    }
 }
