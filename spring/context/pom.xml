@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.sciatta.java.example</groupId>
-        <artifactId>spring-example</artifactId>
+        <artifactId>spring</artifactId>
         <version>${revision}</version>
     </parent>
 
-    <artifactId>context-example</artifactId>
+    <artifactId>context</artifactId>
 
     <dependencies>
         <dependency>

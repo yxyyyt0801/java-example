@@ -9,8 +9,8 @@
     <version>${revision}</version>
     <packaging>pom</packaging>
     <modules>
-        <module>spring-example</module>
-        <module>jdk-example</module>
+        <module>spring</module>
+        <module>jdk</module>
     </modules>
 
     <properties>

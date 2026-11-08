@@ -5,10 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.sciatta.java.example</groupId>
-        <artifactId>java-example</artifactId>
+        <artifactId>spring</artifactId>
         <version>${revision}</version>
     </parent>
 
-    <artifactId>jdk-example</artifactId>
+    <artifactId>mvc</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+    </dependencies>
 </project>
